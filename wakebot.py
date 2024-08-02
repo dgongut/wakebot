@@ -12,7 +12,7 @@ import threading
 import json
 import sys
 
-VERSION = "0.9.0"
+VERSION = "1.0.0 🚀"
 
 def debug(message):
 	print(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} - DEBUG: {message}')
@@ -72,8 +72,8 @@ except:
 	error(get_text("error_bot_telegram_thread", TELEGRAM_THREAD))
 	sys.exit(1)
 
-if not os.path.exists(SCHEDULE_PATH):
-	os.makedirs(SCHEDULE_PATH)
+if not os.path.exists(DATA_PATH):
+	os.makedirs(DATA_PATH)
 
 # Instanciamos el bot
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
@@ -273,12 +273,12 @@ def delayed_delete_in_thread(message, seconds):
 	hilo.start()
 
 def store_device_json(devices):
-	with open(FULL_SCHEDULE_PATH, 'w') as archivo:
+	with open(DEVICES_FILE_PATH, 'w') as archivo:
 		json.dump(devices, archivo, indent=4)
 
 def read_devices_json():
 	try:
-		with open(FULL_SCHEDULE_PATH, 'r') as archivo:
+		with open(DEVICES_FILE_PATH, 'r') as archivo:
 			return json.load(archivo)
 	except FileNotFoundError:
 		return []
