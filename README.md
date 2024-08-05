@@ -23,7 +23,7 @@ Despierta mediante Wake on LAN dispositivos en tu red
 |:------------- |:---------------:| :-------------|
 |TELEGRAM_TOKEN |✅| Token del bot |
 |TELEGRAM_ADMIN |✅| ChatId del administrador (se puede obtener hablándole al bot Rose escribiendo /id). Admite múltiples administradores separados por comas. Por ejemplo 12345,54431,55944 |
-|TELEGRAM_GROUP |❌| ChatId del grupo. Si este bot va a formar parte de un grupo, es necesario especificar el chatId de dicho grupo |
+|TELEGRAM_GROUP |❌| ChatId del grupo. Si este bot va a formar parte de un grupo, es necesario especificar el chatId de dicho grupo. El bot debe ser administrador del grupo |
 |TELEGRAM_THREAD |❌| Thread del tema dentro de un supergrupo; valor numérico (2,3,4..). Por defecto 1. Se utiliza en conjunción con la variable TELEGRAM_GROUP |
 |TZ |✅| Timezone (Por ejemplo Europe/Madrid) |
 |LANGUAGE |❌| Idioma, puede ser ES / EN. Por defecto es ES (Spanish) | 
