@@ -55,67 +55,92 @@ services:
 ---
 
 ## Solo para desarrolladores - Ejecución con código local
-Para su ejecución en local y probar nuevos cambios de código, se necesitan crear 2 ficheros llamados respectivamente Dockerfile_local y docker-compose.yaml
+Para su ejecución en local y probar nuevos cambios de código, el repositorio ya incluye `Dockerfile_local` y `docker-compose.yaml`. Solo necesitas crear un fichero `.env` con tu configuración.
 
-La estructura de carpetas debe quedar:
+La estructura de carpetas es la del propio repositorio (todo en la raíz):
 ```
 wakebot/
 ├── Dockerfile_local
 ├── docker-compose.yaml
-└── src
-    ├── LICENSE
-    ├── README.md
-    ├── config.py
-    ├── wakebot.py
-    └── locale
-        ├── en.json
-        └── es.json
+├── .dockerignore
+├── .env-example
+├── .env
+├── requirements.txt
+├── config.py
+├── wakebot.py
+├── device_store.py
+└── locale
+    ├── en.json
+    └── es.json
+```
+
+El fichero `.env` contiene los datos sensibles (token, chatId...) y está ignorado por git, por lo que **no se sube al repositorio**. Como plantilla se proporciona un `.env-example` que puedes copiar:
+```
+cp .env-example .env
+```
+Después edita `.env` y rellena tus valores reales.
+
+.env-example
+```
+# OBLIGATORIO - Token del bot de Telegram (obtenido de @BotFather)
+TELEGRAM_TOKEN=123456789:ABCdefGhIJKlmNoPQRsTuVwXyZ
+
+# OBLIGATORIO - ChatId del administrador (varios separados por comas: 12345,54431)
+TELEGRAM_ADMIN=12345678
+
+# OBLIGATORIO - Timezone (por ejemplo Europe/Madrid)
+TZ=Europe/Madrid
+
+# OPCIONAL - ChatId del grupo (si el bot forma parte de un grupo)
+#TELEGRAM_GROUP=-1001234567890
+
+# OPCIONAL - Thread del tema dentro de un supergrupo (valor numérico). Por defecto 1
+#TELEGRAM_THREAD=1
+
+# OPCIONAL - Idioma: ES / EN. Por defecto ES
+#LANGUAGE=ES
 ```
 
 Dockerfile_local
 ```
-FROM alpine:3.18.6
-
-ENV TELEGRAM_TOKEN abc
-ENV TELEGRAM_ADMIN abc
-ENV TELEGRAM_GROUP abc
-ENV TELEGRAM_THREAD 1
-ENV LANGUAGE ES
-ENV TZ UTC
-
-RUN apk add --no-cache python3 py3-pip tzdata
-RUN pip3 install pyTelegramBotAPI==4.17.0
-RUN pip3 install wakeonlan==3.1.0
+FROM alpine:3.24.1
 
 WORKDIR /app
-COPY src/ .
+
+RUN apk add --no-cache python3 py3-pip tzdata
+
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
+
+COPY . .
 
 ENTRYPOINT ["python3", "wakebot.py"]
 ```
 
 docker-compose.yaml
 ```yaml
-version: '3.3'
 services:
-    TEST-wakebot:
-        container_name: TEST-wakebot
+    test-wakebot:
+        container_name: test-wakebot
         environment:
-            - TELEGRAM_TOKEN=
-            - TELEGRAM_ADMIN=
-            - TZ=Europe/Madrid
-            #- TELEGRAM_GROUP=
-            #- TELEGRAM_THREAD=1
-            #- LANGUAGE=ES
+            - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+            - TELEGRAM_ADMIN=${TELEGRAM_ADMIN}
+            - TZ=${TZ:-Europe/Madrid}
+            #- TELEGRAM_GROUP=${TELEGRAM_GROUP}
+            #- TELEGRAM_THREAD=${TELEGRAM_THREAD:-1}
+            #- LANGUAGE=${LANGUAGE:-ES}
         volumes:
-            - /ruta/para/guardar/las/programaciones:/app/data # CAMBIAR LA PARTE IZQUIERDA
+            - ./data:/app/data
         build:
           context: .
           dockerfile: ./Dockerfile_local
+        restart: always
+        network_mode: host
         tty: true
 ```
 
-Es necesario establecer un `TELEGRAM_TOKEN` y un `TELEGRAM_ADMIN` correctos y diferentes al de la ejecución normal.
+Los valores `${...}` se leen automáticamente del fichero `.env` que se encuentra junto al `docker-compose.yaml`. Es necesario establecer un `TELEGRAM_TOKEN` y un `TELEGRAM_ADMIN` correctos y diferentes al de la ejecución normal. Los datos de los dispositivos se guardan en la carpeta `./data`, ignorada por git. El `.dockerignore` evita que el `.env` y otros ficheros sensibles entren en la imagen.
 
-Para levantarlo habría que ejecutar en esa ruta: `docker compose up -d`
+Para levantarlo habría que ejecutar en la raíz del repositorio: `docker compose up -d`
 
 Para detenerlo y probar nuevos cambios habría que ejecutar en esa ruta: `docker compose down --rmi`

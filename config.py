@@ -1,11 +1,17 @@
 import os
+import time
 
 # DOCKER ENVIRONMENT VARIABLES
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-TELEGRAM_ADMIN = os.environ.get("TELEGRAM_ADMIN")
-TELEGRAM_GROUP = os.environ.get("TELEGRAM_GROUP")
-TELEGRAM_THREAD = os.environ.get("TELEGRAM_THREAD")
-LANGUAGE = os.environ.get("LANGUAGE")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "abc")
+TELEGRAM_ADMIN = os.environ.get("TELEGRAM_ADMIN", "abc")
+TELEGRAM_GROUP = os.environ.get("TELEGRAM_GROUP", "abc")
+TELEGRAM_THREAD = os.environ.get("TELEGRAM_THREAD", "1")
+LANGUAGE = os.environ.get("LANGUAGE", "ES")
+TZ = os.environ.get("TZ", "UTC")
+
+# Aplica la zona horaria para las marcas de tiempo
+os.environ["TZ"] = TZ
+time.tzset()
 
 # CONSTANTS
 ANONYMOUS_USER_ID = "1087968824"

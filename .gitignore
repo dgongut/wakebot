@@ -1,0 +1,12 @@
+# Variables de entorno locales (contienen datos sensibles)
+.env
+
+# Datos del bot
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/

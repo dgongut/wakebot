@@ -1,0 +1,18 @@
+services:
+    test-wakebot:
+        container_name: test-wakebot
+        environment:
+            - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+            - TELEGRAM_ADMIN=${TELEGRAM_ADMIN}
+            - TZ=${TZ:-Europe/Madrid}
+            #- TELEGRAM_GROUP=${TELEGRAM_GROUP}
+            #- TELEGRAM_THREAD=${TELEGRAM_THREAD:-1}
+            #- LANGUAGE=${LANGUAGE:-ES}
+        volumes:
+            - ./data:/app/data
+        build:
+          context: .
+          dockerfile: ./Dockerfile_local
+        restart: always
+        network_mode: host
+        tty: true

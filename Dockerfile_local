@@ -1,0 +1,14 @@
+FROM alpine:3.24.1
+
+WORKDIR /app
+
+RUN apk add --no-cache python3 py3-pip tzdata
+
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
+
+# Solo los ficheros necesarios en runtime
+COPY wakebot.py config.py device_store.py ./
+COPY locale/ ./locale/
+
+ENTRYPOINT ["python3", "wakebot.py"]

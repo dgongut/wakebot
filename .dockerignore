@@ -1,0 +1,22 @@
+# Datos sensibles y locales (no deben entrar en la imagen)
+.env
+.env-example
+
+# Datos del bot
+data/
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Tests y documentación
+test_*.py
+README.md
+LICENSE
